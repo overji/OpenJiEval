@@ -1,0 +1,6 @@
+{
+  "name": "解题能力评价",
+  "introduction": "评价大模型的解题能力",
+  "judge_method": "problem_solve",
+  "files_dir": "problem_solve"
+}
