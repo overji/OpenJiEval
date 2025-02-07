@@ -1,11 +1,12 @@
-import io
 import pandas as pd
-from PIL import Image
-
 
 def get_training_data():
     df = pd.read_parquet("hf://datasets/Kayamori/31C/data/train-00000-of-00001.parquet")
-    image_data = (df["image"].iloc[0])["bytes"]
-    image_stream = io.BytesIO(image_data)
-    image = Image.open(image_stream)
-    image.show()
+    for index, row in df.iterrows():
+        df.loc[index, "image"] = row["image"]["path"]
+    return df
+
+if __name__ == '__main__':
+    df = get_training_data()
+    for index,row in df.iterrows():
+        print(f"image:{row['image']},options{row['options']},answer:{row['answer']},topic:{row['topic']}")

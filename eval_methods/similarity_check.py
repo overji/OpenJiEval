@@ -22,7 +22,7 @@ def similarity_check(judge_llm:OpenJi_LLM,
               f"请判断句子B与句子A的相似度，相似度范围为0-100，0为完全不相似，100为完全一致\n"
               f"输出格式为{standard_output_format()}")
     response = judge_llm.send_message(prompt)
-    print(response[2]['content'])
+    print(response)
     matchJson = re.search(r'"similarity": (\d+)', response[2]['content'])
     if matchJson:
         print(f"相似度为{matchJson.group(1)}")

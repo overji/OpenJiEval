@@ -1,5 +1,7 @@
 import json
 import os
+
+from eval_methods.similarity_check import similarity_check
 from llm_use.load_llms import load_llms
 from llm_use.llm import OpenJi_LLM
 from eval_methods.problem_solve_judge import problem_solve_judge
@@ -27,7 +29,19 @@ class testLLM:
         else:
             raise Exception("Fail to load judge llm")
 
+    def test_problem(self,
+                     llm_output:str,
+                     standard_answer:str,
+                     choices=None):
+        if choices is None:
+            choices = []
+        return problem_solve_judge(judge_llm=self.judge_llm,
+                                llm_answer=llm_output,
+                                standard_answer=standard_answer,
+                                choices=choices)
+
     def load_problem_test(self):
+        #这个，不需要了
         testsDir = os.path.join(os.path.dirname(os.path.dirname(__file__)),"tests")
         all_test_jsons = get_all_json_files(testsDir)
         to_be_tested_jsons = []
@@ -48,7 +62,3 @@ class testLLM:
                 answer.append(problem_solve_judge(self.judge_llm,question,standard_answer,llm_answer))
         return answer
 
-
-if __name__ == '__main__':
-    t = testLLM()
-    print(t.load_problem_test())

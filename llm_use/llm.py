@@ -26,6 +26,7 @@ class OpenJi_LLM:
         :param temperature: 大模型的temperature
         :return: 返回大模型输出的内容，注意不是流式输出
         """
+        print("正在询问大模型")
         if (not self.is_multimodal) or image_url == "":
             #如果模型不是多模态，就返回非多模态情况下的结果
             return self.send_message_no_picture(user_message=user_prompt,
@@ -51,10 +52,10 @@ class OpenJi_LLM:
         return (response.choices[0].message.content)
 
     def send_message_no_picture(self,
-                     user_message:str,
-                     system_message:str = "",
-                     temperature:int=0.1):
-        #返回值是本次对话的json
+                                user_message: str,
+                                system_message: str = "",
+                                temperature: int = 0.1):
+        # 返回值是本次对话的json
         my_message = [
             {
                 "role": "system",
@@ -65,18 +66,24 @@ class OpenJi_LLM:
                 "content": user_message
             }
         ]
-        response = self.llm.chat.completions.create(
-            model = self.model_name,
-            messages=my_message,
-            stream=False,
-            temperature=temperature
-        )
-        returned_message = response.choices[0].message.content
-        my_message.append({
-            "role":"assistant",
-            "content":returned_message
-        })
-        return my_message
+        try:
+            response = self.llm.chat.completions.create(
+                model=self.model_name,
+                messages=my_message,
+                stream=False,
+                temperature=temperature,
+                max_tokens=3000
+            )
+            returned_message = response.choices[0].message.content
+            my_message.append({
+                "role": "assistant",
+                "content": returned_message
+            })
+            return returned_message
+        except Exception as e:
+            print(f"Error: {e}")
+            print(f"Response content: {response.content if 'response' in locals() else 'No response'}")
+            raise
 
 
 
