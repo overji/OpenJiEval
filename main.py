@@ -18,8 +18,6 @@ def test_llm_main(df: pd.DataFrame, llm: OpenJi_LLM, testLLM: testLLM, final_cou
                 logger.info(f"本次测试的大模型为{llm.model_name},多模态:{bool(llm.is_multimodal)},prompt:\"{prompt_json["prompt"]}\",prompt类型:{prompt_json["prompt_type"]}")
 
                 for index, row in df.iterrows():
-                    if index != 1:
-                        continue
                     try:
                         logger.info(f"本次题目{row['id']},图片路径:{row['image']},目标答案:{row['answer']},题目选项:{row['options']}")
                         message = llm.send_message(prompt_json["prompt"],
