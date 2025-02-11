@@ -1,5 +1,6 @@
 */__pycache__/
 evals/
-secrets/
+secrets/secret.json
+secrets/judge_secret.json
 logs/
 .idea/
