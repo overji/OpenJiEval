@@ -10,8 +10,9 @@ import pandas as pd
 
 
 def test_llm_main(df: pd.DataFrame, llm: OpenJi_LLM, testLLM: testLLM, final_count: list,prompts:List[dict]):
-    final_score = 0
+    final_scores = []
     if llm.is_multimodal:
+        prompt_score = 0
         for prompt_json in prompts:
             if prompt_json["is_multimodal"]:
                 logger.info(f"本次测试的大模型为{llm.model_name},多模态:{bool(llm.is_multimodal)},prompt:\"{prompt_json["prompt"]}\",prompt类型:{prompt_json["prompt_type"]}")
@@ -21,18 +22,19 @@ def test_llm_main(df: pd.DataFrame, llm: OpenJi_LLM, testLLM: testLLM, final_cou
                         continue
                     try:
                         logger.info(f"本次题目{row['id']},图片路径:{row['image']},目标答案:{row['answer']},题目选项:{row['options']}")
-                        message = llm.send_message("",
+                        message = llm.send_message(prompt_json["prompt"],
                                                    f"http://112.124.43.86/problems/images/{row['image']}",
                                                    "你是一个数学高手")
                         logger.info(f"大模型答案:{message}")
                         score = testLLM.test_problem(message, row['answer'], row['options'])
-                        final_score += (score / 100)
-                        logger.info(f"本次得分:{score},现在总得分{final_score}")
+                        prompt_score += (score / 100)
+                        logger.info(f"本次得分:{score},现在总得分{prompt_score}")
 
                     except Exception as e:
                         logger.error(e.__str__())
                         continue
-    return final_score
+                final_scores.append({prompt_json["prompt_type"]:prompt_score})
+    return final_scores
 
 if __name__ == '__main__':
     llms: List[OpenJi_LLM] = load_llms()
@@ -45,5 +47,5 @@ if __name__ == '__main__':
     logger.info(f"prompts加载完成")
     for llm in llms:
         final_score = test_llm_main(df, llm, tester, final_count,prompts)
-        final_count.append((llm.model_name, final_score))
+        final_count.append([llm.model_name, final_score])
     logger.info(f"最终评价{final_count}")

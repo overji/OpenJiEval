@@ -6,6 +6,11 @@
   },
   {
     "prompt_type": "example",
+    "prompt": "请根据我给出的这个图片，解决图中这个问题，尽可能简略",
+    "is_multimodal": 1
+  },
+  {
+    "prompt_type": "example",
     "prompt": "解决这个问题:1+1=?",
     "is_multimodal": 0
   }
