@@ -1,7 +1,6 @@
-import json
-
 from llm_use.llm import OpenJi_LLM
 import re
+import src.logger as logger
 
 def standard_output():
     return "{\"gain_score_point\": 得分点,\"final_score\": 最终得分}"
@@ -13,7 +12,7 @@ def problem_solve_judge(judge_llm:OpenJi_LLM,
                         choices=None):
     if choices is None:
         choices = []
-    print("正在判题")
+    logger.info("正在判题")
     choices_prompt_section = ""
     if len(choices) != 0:
         choices_prompt_section = (f"下面是这个选择题的选项，用户的答案必须是这四个选项中的一个，"
@@ -30,14 +29,14 @@ def problem_solve_judge(judge_llm:OpenJi_LLM,
               f"请按照以下格式给出你的评分:{standard_output()},在这个格式中，gain_score_point表示得分点，final_score表示最终得分。最终得分只要一个数字")
     judge_response = judge_llm.send_message(prompt)
     final_score = 0
-    print(judge_response)
+    logger.info(judge_response)
     # 正则表达式提取分数
     pattern = r'"final_score":\s*(\d+)'
 
     match = re.search(pattern, judge_response)
     if match:
         final_score = int(match.group(1))
-        print(f"final_score: {final_score}\n")
+        logger.info(f"final_score: {final_score}\n")
     else:
-        print("No match found")
+        logger.error("No match found")
     return final_score

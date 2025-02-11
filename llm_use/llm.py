@@ -1,5 +1,4 @@
-import json
-
+import src.logger as logger
 from openai import OpenAI
 
 class OpenJi_LLM:
@@ -26,7 +25,7 @@ class OpenJi_LLM:
         :param temperature: 大模型的temperature
         :return: 返回大模型输出的内容，注意不是流式输出
         """
-        print("正在询问大模型")
+        logger.info("正在询问大模型")
         if (not self.is_multimodal) or image_url == "":
             #如果模型不是多模态，就返回非多模态情况下的结果
             return self.send_message_no_picture(user_message=user_prompt,
@@ -81,8 +80,8 @@ class OpenJi_LLM:
             })
             return returned_message
         except Exception as e:
-            print(f"Error: {e}")
-            print(f"Response content: {response.content if 'response' in locals() else 'No response'}")
+            logger.error(f"Error: {e}")
+            logger.error(f"Response content: {response.content if 'response' in locals() else 'No response'}")
             raise
 
 
